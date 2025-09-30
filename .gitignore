@@ -1,0 +1,28 @@
+# зависимости
+node_modules/
+
+# сборка / билды
+dist/
+build/
+
+# тестовое покрытие
+coverage/
+
+# логи
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# редакторы / IDE
+.vscode/
+.idea/
+
+# временные файлы ОС
+.DS_Store
+Thumbs.db
+
+# env-файлы (если появятся)
+.env
+.env.local
+.env.*.local
