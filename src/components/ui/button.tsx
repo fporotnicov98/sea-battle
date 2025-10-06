@@ -1,5 +1,4 @@
-
-import * as React from 'react'
+import { forwardRef } from 'react'
 import { cn } from '@/lib/utils'
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -7,7 +6,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   size?: 'sm' | 'md'
 }
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant='default', size='md', ...props }, ref) => {
     const variants = {
       default: 'bg-slate-700 hover:bg-slate-600 text-white',
@@ -19,7 +18,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       sm: 'h-8 px-3 rounded-xl text-sm',
       md: 'h-10 px-4 rounded-2xl text-sm'
     } as const
-    return <button ref={ref} className={cn('inline-flex items-center justify-center transition focus:outline-none', variants[variant], sizes[size], className)} {...props} />
+    return (
+      <button
+        ref={ref}
+        className={cn('inline-flex items-center justify-center transition focus:outline-none', variants[variant], sizes[size], className)}
+        {...props}
+      />
+    )
   }
 )
 Button.displayName = 'Button'

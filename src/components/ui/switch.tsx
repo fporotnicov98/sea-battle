@@ -1,6 +1,4 @@
 
-import * as React from 'react'
-
 export function Switch({ checked, onCheckedChange }: { checked?: boolean; onCheckedChange?: (v:boolean)=>void }) {
   return (
     <button

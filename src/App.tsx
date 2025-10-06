@@ -1,5 +1,4 @@
-
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,10 +7,19 @@ import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 import {
-  type Coord, type Board,
-  GRID, cellKey, within, createEmptyBoard, cloneBoard,
-  placeable, applyShipToCells, clearShipFromCells, randomPlacement
+  type Coord,
+  type Board,
+  GRID,
+  cellKey,
+  within,
+  createEmptyBoard,
+  cloneBoard,
+  placeable,
+  applyShipToCells,
+  clearShipFromCells,
+  randomPlacement
 } from '@/lib/seabattle'
+import { AIController } from './controllers/AIController'
 
 type Phase = 'setup' | 'inProgress' | 'finished'
 type MoveMode = 'none' | 'selecting' | 'moving'
@@ -19,30 +27,6 @@ type LogEntry = { t: number; text: string }
 type Ship = Board['ships'][number]
 
 const defaultFleet = [4,3,3,2,2,2,1,1,1,1]
-
-class AIController {
-  size: number
-  targets: Coord[] = []
-  tried = new Set<string>()
-  constructor(size: number) { this.size = size }
-  enqueueNeighbors(x: number, y: number) {
-    const dirs = [[1,0],[-1,0],[0,1],[0,-1]] as const
-    for (const [dx,dy] of dirs) {
-      const nx = x+dx, ny = y+dy
-      if (within(nx, ny, this.size) && !this.tried.has(`${nx},${ny}`)) this.targets.push({x:nx,y:ny})
-    }
-  }
-  nextShot(): Coord {
-    while (this.targets.length) {
-      const c = this.targets.pop()!
-      if (!this.tried.has(`${c.x},${c.y}`)) return c
-    }
-    let x=0,y=0,guard=0
-    while (guard++<5000) { x = Math.floor(Math.random()*this.size); y = Math.floor(Math.random()*this.size);
-      if ((x+y)%2===0 && !this.tried.has(`${x},${y}`)) break }
-    return {x,y}
-  }
-}
 
 export default function App() {
   const [enforceNoTouch, setEnforceNoTouch] = useState(true)
@@ -66,7 +50,6 @@ export default function App() {
     setPlayerBoard(createEmptyBoard(GRID))
     const aiPlaced = randomPlacement(createEmptyBoard(GRID), fleet, 'ai', enforceNoTouch)
     setAIBoard(aiPlaced)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const shipsPlacedOk = useMemo(() => playerBoard.ships.length === fleet.length, [playerBoard.ships.length, fleet.length])

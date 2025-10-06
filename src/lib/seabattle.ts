@@ -1,4 +1,3 @@
-
 export type Coord = { x:number; y:number }
 export type Orientation = 'H' | 'V'
 export type Cell = { x:number; y:number; shotByPlayer:boolean; shotByAI:boolean; shipId?:string }
@@ -19,7 +18,7 @@ export function createEmptyBoard(size=GRID): Board {
   return { size, cells, ships: [] }
 }
 
-export function iterShipCells(ship: Ship) {
+export function iterShipCells(ship: Ship):Coord[] {
   const coords = [] as Coord[]
   for (let i=0;i<ship.size;i++) {
     const x = ship.bow.x + (ship.orientation==='H'? i:0)
@@ -31,10 +30,14 @@ export function iterShipCells(ship: Ship) {
 
 export function placeable(board: Board, ship: Ship, enforceNoTouch: boolean): boolean {
   const coords = iterShipCells(ship)
+
   if (!coords.every(c=>within(c.x,c.y,board.size))) return false
+
   for (const c of coords) {
     const current = board.cells[c.y][c.x]
+
     if (current.shipId && current.shipId !== ship.id) return false
+
     if (enforceNoTouch) {
       for (let dy=-1; dy<=1; dy++) for (let dx=-1; dx<=1; dx++) {
         const nx=c.x+dx, ny=c.y+dy
@@ -66,6 +69,8 @@ export function cloneBoard(b: Board): Board {
     ships: b.ships.map(s=>({...s, hits: new Set(Array.from(s.hits))}))
   }
 }
+
+function randInt(n: number) { return Math.floor(Math.random() * n); }
 
 export function randomPlacement(board: Board, fleet: number[], owner: Ship['owner'], enforceNoTouch: boolean): Board {
   const b = cloneBoard(board)
